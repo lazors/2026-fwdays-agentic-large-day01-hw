@@ -1,0 +1,235 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+#
+# CodeRabbit config for auto-grading workshop Day 1 PRs
+# Place this file in the ROOT of the Excalidraw fork repository.
+
+language: "uk-UA"
+tone_instructions: >
+  Ти — ментор на воркшопі "Agentic IDE for large, brownfield projects".
+  Відповідай українською. Будь доброзичливим, але вимогливим.
+  Якщо учасник щось пропустив — поясни, що саме та чому це важливо.
+  Використовуй emoji для статусів: ✅ зроблено, ⚠️ частково, ❌ пропущено.
+
+early_access: false
+
+reviews:
+  profile: "assertive"
+  request_changes_workflow: false
+  high_level_summary: true
+  high_level_summary_placeholder: "@coderabbitai summary"
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  changed_files_summary: true
+  sequence_diagrams: false
+
+  auto_review:
+    enabled: true
+    drafts: true
+    auto_incremental_review: true
+    auto_pause_after_reviewed_commits: 0
+    base_branches:
+      - ".*"
+    ignore_title_keywords:
+      - "WIP"
+      - "[skip review]"
+    ignore_usernames:
+      - "dependabot[bot]"
+      - "renovate[bot]"
+      - "github-actions[bot]"
+
+  # ── File filters ──────────────────────────────────────────────
+  path_filters:
+    - "docs/**"
+    - ".cursorignore"
+    - ".cursorrules"
+    - ".cursor/**"
+    - "AGENTS.md"
+    - "!node_modules/**"
+    - "!dist/**"
+    - "!build/**"
+    - "!coverage/**"
+    - "!*.lock"
+    - "!package-lock.json"
+    - "!yarn.lock"
+    - "!**/*.snap"
+    - "!**/*.min.js"
+    - "!**/*.min.css"
+
+  # ── Path-specific review instructions ─────────────────────────
+  path_instructions:
+    - path: ".cursorignore"
+      instructions: |
+        Це завдання Крок 2 воркшопу. Перевір:
+        1. Файл існує в корені репозиторію
+        2. Містить розумні патерни виключення для великого проєкту:
+           - Build artifacts (dist/, build/, .next/)
+           - Dependencies (node_modules/)
+           - Generated/minified files (*.min.js, *.min.css, *.snap)
+           - Lock files (yarn.lock, package-lock.json)
+           - Coverage (coverage/, .nyc_output/)
+           - IDE/system files (.git/, .vscode/, .DS_Store)
+        3. НЕ виключає source code (packages/excalidraw/**, src/**)
+        4. НЕ виключає тести (якщо тести не є snapshot-тестами)
+        Якщо файл порожній або містить лише коментарі — це ❌.
+        Якщо є хоча б базові патерни — ✅, але запропонуй покращення.
+
+    - path: "docs/memory/projectbrief.md"
+      instructions: |
+        Це завдання Крок 4 воркшопу — Memory Bank: projectbrief.md.
+        Перевір:
+        1. Файл описує суть проєкту Excalidraw та його основну мету
+        2. Містить структуровані секції (заголовки, bullet points)
+        3. Розмір: до 200 рядків
+        4. Факти відповідають реальному Excalidraw (це whiteboard tool для collaborative drawing)
+        5. Немає вигаданих фактів чи галюцинацій AI
+        Оціни якість: ✅ якісний / ⚠️ потребує доопрацювання / ❌ неприйнятний.
+
+    - path: "docs/memory/techContext.md"
+      instructions: |
+        Це завдання Крок 4 воркшопу — Memory Bank: techContext.md.
+        Перевір:
+        1. Описує технічний стек Excalidraw (React, TypeScript, Vite/Webpack тощо)
+        2. Містить версії ключових залежностей
+        3. Перелічує основні команди (build, test, dev server)
+        4. Згадує структуру monorepo (packages/)
+        5. Розмір: до 200 рядків
+        6. Немає вигаданих залежностей чи неправильних команд
+        Особливо перевір команди — учасники часто плутають yarn/npm/pnpm.
+
+    - path: "docs/memory/systemPatterns.md"
+      instructions: |
+        Це завдання Крок 4 воркшопу — Memory Bank: systemPatterns.md.
+        Перевір:
+        1. Описує архітектуру Excalidraw (компонентну модель, state management)
+        2. Згадує ключові патерни (Canvas rendering, Element system, Action system)
+        3. Структурований (заголовки, bullet points, можливо діаграми)
+        4. Розмір: до 200 рядків
+        5. Факти відповідають реальній архітектурі Excalidraw
+        Якщо учасник описав лише загальні React-патерни без специфіки Excalidraw — ⚠️.
+
+    - path: "docs/memory/*.md"
+      instructions: |
+        Це файли Memory Bank (Крок 4 воркшопу).
+        Загальні вимоги до ВСІХ файлів Memory Bank:
+        - Структуровані з Markdown-заголовками та bullet points
+        - До 200 рядків кожен
+        - Факти верифіковані проти source code
+        - Без lorem ipsum, placeholder-тексту, або порожніх секцій
+        - Українською або англійською (обидві мови прийнятні)
+
+    - path: "docs/technical/architecture.md"
+      instructions: |
+        Це завдання Крок 5 воркшопу — Technical Docs: architecture.md.
+        Перевір наявність секцій:
+        1. High-level Architecture (бажано з mermaid-діаграмою)
+        2. Data Flow — як дані рухаються через систему
+        3. State Management — appState, elements, actionManager
+        4. Rendering Pipeline — від React component до canvas
+        5. Package Dependencies — взаємозв'язки між packages
+        Розмір: 200–500 рядків.
+        Якщо файл < 100 рядків — ⚠️ занадто поверхневий.
+        Якщо файл > 700 рядків — ⚠️ занадто деталізований.
+        Перевір, що mermaid-діаграми синтаксично коректні.
+
+    - path: "docs/product/domain-glossary.md"
+      instructions: |
+        Це завдання Крок 5 воркшопу — Product Docs: domain-glossary.md.
+        Перевір:
+        1. Містить терміни специфічні для Excalidraw
+        2. Для кожного терміну є:
+           - Назва (англійською, як у коді)
+           - Визначення в контексті Excalidraw
+           - Де використовується (ключові файли)
+           - "НЕ плутати з" (загальне значення vs значення в проєкті)
+        3. Обов'язкові терміни: Element, Scene, AppState, ExcalidrawElement, Tool, Action
+        4. Бажані терміни: Collaboration, Library, Bound Element, Linear Element
+        Якщо менше 5 термінів — ⚠️ недостатньо.
+
+    - path: "docs/technical/**"
+      instructions: |
+        Файли Technical Docs (Крок 5 воркшопу).
+        Загальні вимоги:
+        - Тільки факти з source code, без вигадок
+        - Структурований Markdown
+        - Mermaid-діаграми бажані, але не обов'язкові
+        - Українською або англійською
+
+    - path: "docs/product/**"
+      instructions: |
+        Файли Product Docs (Крок 5 воркшопу).
+        Загальні вимоги:
+        - Терміни мають відповідати реальному коду Excalidraw
+        - Структурований Markdown
+        - Українською або англійською
+
+    - path: ".cursorrules"
+      instructions: |
+        Якщо учасник створив або змінив .cursorrules — перевір:
+        1. Правила специфічні для Excalidraw (не generic)
+        2. Немає конфліктів з існуючими конвенціями проєкту
+        3. Правила допоможуть AI краще працювати з цим проєктом
+
+    - path: "AGENTS.md"
+      instructions: |
+        Якщо учасник створив або змінив AGENTS.md — перевір:
+        1. Описує контекст проєкту для AI-агентів
+        2. Містить корисну інформацію про структуру, команди, конвенції
+        3. Не дублює інформацію з Memory Bank
+
+  # ── Pre-merge checks (grading criteria) ───────────────────────
+  pre_merge_checks:
+    title:
+      mode: "warning"
+      requirements: >
+        PR title should follow the format: "Day 1: <participant-name> — Workshop Assignment"
+        or similar descriptive format in Ukrainian or English.
+
+    description:
+      mode: "warning"
+
+    custom_checks:
+      - mode: "warning"
+        name: "Cursorignore exists"
+        instructions: >
+          Check that the PR includes a `.cursorignore` file in the repository root.
+          The file should contain meaningful ignore patterns for a large monorepo
+          (at minimum: node_modules/, dist/, build/, *.lock, coverage/).
+          PASS if the file exists and has at least 5 meaningful patterns.
+          FAIL if the file is missing or empty.
+
+      - mode: "warning"
+        name: "Memory Bank core files"
+        instructions: >
+          Check that the PR includes ALL THREE required Memory Bank files:
+          1. docs/memory/projectbrief.md
+          2. docs/memory/techContext.md
+          3. docs/memory/systemPatterns.md
+          Each file must be non-empty (at least 20 lines) and contain
+          structured Markdown with headers and bullet points.
+          PASS if all 3 files exist and are substantive.
+          FAIL if any of the 3 files is missing or has < 20 lines.
+
+      - mode: "warning"
+        name: "Technical architecture doc"
+        instructions: >
+          Check that the PR includes docs/technical/architecture.md.
+          The file should contain at least these sections:
+          High-level Architecture, Data Flow, State Management,
+          Rendering Pipeline, Package Dependencies.
+          File should be between 100 and 700 lines.
+          PASS if file exists with 3+ required sections and appropriate length.
+          FAIL if file is missing or has fewer than 3 sections.
+
+      - mode: "warning"
+        name: "Domain glossary"
+        instructions: >
+          Check that the PR includes docs/product/domain-glossary.md.
+          The file should contain at least 5 domain-specific terms
+          for Excalidraw (e.g., Element, Scene, AppState, Tool, Action).
+          Each term should have a definition and context.
+          PASS if file exists with 5+ well-defined terms.
+          FAIL if file is missing or has fewer than 5 terms.
+
+chat:
+  auto_reply: true
